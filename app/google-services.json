@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "526714222720",
+    "project_id": "cobratelo-9df16",
+    "storage_bucket": "cobratelo-9df16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526714222720:android:93962ab1efa5539a93ce65",
+        "android_client_info": {
+          "package_name": "com.example.cobratelo_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyfBO-znTCcTIo6O35eHiMZCbMcMA_D9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

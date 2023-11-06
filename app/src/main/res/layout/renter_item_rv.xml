@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="renter"
+            type="com.example.cobratelo_app.data.model.Renter" />
+
+        <variable
+            name="fragment"
+            type="com.example.cobratelo_app.ui.home.HomeFragment" />
+
+        <variable
+            name="listener"
+            type="com.example.cobratelo_app.ui.home.listener.HomeFragmentListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="10dp"
+        android:layout_marginBottom="15dp"
+        style="@style/Widget.Material3.CardView.Filled"
+        app:cardBackgroundColor="@color/design_default_color_on_primary"
+        android:onClick="@{()-> listener.onCardClicked(renter.id)}">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/renter_placeTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{renter.place}"
+                tools:text="ENCANTADA"
+                android:textStyle="bold"
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/renter_created_dateTxt"/>
+
+            <TextView
+                android:id="@+id/renter_created_dateTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{renter.createdAt}"
+                tools:text="Inició el 13/11/23"
+                android:textStyle="italic"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toEndOf="@id/renter_placeTxt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/renter_placeTxt" />
+
+            <TextView
+                android:id="@+id/renter_nameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{renter.name}"
+                tools:text="Nicolas"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/renter_placeTxt" />
+
+            <TextView
+                android:id="@+id/renter_descTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{renter.desc}"
+                tools:text="77kwh consumido al 07/23"
+                android:layout_marginTop="15dp"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/renter_status"
+                app:layout_constraintTop_toBottomOf="@id/renter_nameTxt" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/renter_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="AL DIA"
+                android:minWidth="108dp"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                app:shapeAppearance="?attr/shapeAppearanceCornerLarge"
+                android:text="@{fragment.setTextStatus(renter.status)}"
+                app:chipBackgroundColor="@{fragment.setStatusColor(renter.status)}"
+                app:chipStrokeColor="@{fragment.setStatusColor(renter.status)}"
+                app:layout_constraintTop_toTopOf="@id/renter_descTxt"
+                app:layout_constraintBottom_toBottomOf="@id/renter_descTxt"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

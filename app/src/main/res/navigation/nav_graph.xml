@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/addRenterFragment"
+        android:name="com.example.cobratelo_app.ui.addRenter.AddRenterFragment"
+        android:label="Nuevo registro"
+        tools:layout="@layout/fragment_add_renter" />
+    <fragment
+        android:id="@+id/renterDetailFragment"
+        android:name="com.example.cobratelo_app.ui.renter_detail.RenterDetailFragment"
+        android:label="fragment_renter_detail"
+        tools:layout="@layout/fragment_renter_detail" >
+        <action
+            android:id="@+id/action_renterDetailFragment_to_servicePayHistoryFragment"
+            app:destination="@id/servicePayHistoryFragment" />
+        <action
+            android:id="@+id/action_renterDetailFragment_to_rentPayHistoryFragment"
+            app:destination="@id/rentPayHistoryFragment" />
+        <argument
+            android:name="renterId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+    <fragment
+        android:id="@+id/rentPayHistoryFragment"
+        android:name="com.example.cobratelo_app.ui.pay_history.rent.RentPayHistoryFragment"
+        android:label="fragment_rent_pay_history"
+        tools:layout="@layout/fragment_rent_pay_history" >
+        <argument
+            android:name="renterName"
+            app:argType="string" />
+        <argument
+            android:name="renterId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/servicePayHistoryFragment"
+        android:name="com.example.cobratelo_app.ui.pay_history.service.ServicePayHistoryFragment"
+        android:label="ServicePayHistoryFragment"
+        tools:layout="@layout/fragment_service_pay_history">
+        <argument
+            android:name="renterName"
+            app:argType="string" />
+        <argument
+            android:name="renterId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateRenterConsumptionFragment"
+        android:name="com.example.cobratelo_app.ui.consumption_renter.UpdateRenterConsumptionFragment"
+        android:label="fragment_update_renter_consumption"
+        tools:layout="@layout/fragment_update_renter_consumption" />
+    <fragment
+        android:id="@+id/updateGeneralConsumptionFragment"
+        android:name="com.example.cobratelo_app.ui.consumption.UpdateGeneralConsumptionFragment"
+        android:label="fragment_update_general_consumption"
+        tools:layout="@layout/fragment_update_general_consumption" >
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.cobratelo_app.ui.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_addRenterFragment"
+            app:destination="@id/addRenterFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_renterDetailFragment"
+            app:destination="@id/renterDetailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_energySummaryFragment"
+            app:destination="@id/energySummaryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/energySummaryFragment"
+        android:name="com.example.cobratelo_app.ui.energy_summary.EnergySummaryFragment"
+        android:label="fragment_energy_summary"
+        tools:layout="@layout/fragment_energy_summary" >
+        <action
+            android:id="@+id/action_energySummaryFragment_to_updateGeneralConsumptionFragment"
+            app:destination="@id/updateGeneralConsumptionFragment" />
+        <action
+            android:id="@+id/action_energySummaryFragment_to_updateRenterConsumptionFragment"
+            app:destination="@id/updateRenterConsumptionFragment" />
+    </fragment>
+</navigation>

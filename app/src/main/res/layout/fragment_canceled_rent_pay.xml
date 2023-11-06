@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.cobratelo_app.ui.pay_history.rent.PayHistoryViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.pay_history.rent.PendingRentPayFragment"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Fecha"
+            style="@style/Widget.Cobrateloapp.TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/amount"/>
+
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Monto"
+            android:textAlignment="center"
+            style="@style/Widget.Cobrateloapp.TextView"
+            app:layout_constraintStart_toEndOf="@id/date"
+            app:layout_constraintTop_toTopOf="@id/date"
+            app:layout_constraintEnd_toStartOf="@id/action"
+            />
+
+        <TextView
+            android:id="@+id/action"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Acción"
+            style="@style/Widget.Cobrateloapp.TextView"
+            android:textAlignment="textEnd"
+            app:layout_constraintStart_toEndOf="@id/amount"
+            app:layout_constraintTop_toTopOf="@id/date"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!--Divider-->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="?attr/dividerHorizontal"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/amount"/>
+        <!--End Divider-->
+
+        <!--BEGIN RECYCLER VIEW. THIS MUST BE WRITTEN INSIDE A NEW LAYOUT ITEM-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/canceledPayments_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:clipToPadding="false"
+            app:dataList="@{viewModel.getCanceledRentPayments()}"
+            tools:listitem="@layout/canceled_pay_item"
+            tools:itemCount="5"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

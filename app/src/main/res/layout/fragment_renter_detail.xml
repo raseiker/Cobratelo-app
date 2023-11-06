@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="renter"
+            type="com.example.cobratelo_app.data.model.Renter" />
+
+        <variable
+            name="fragment"
+            type="com.example.cobratelo_app.ui.renter_detail.RenterDetailFragment" />
+
+        <variable
+            name="viewModel"
+            type="com.example.cobratelo_app.ui.renter_detail.RenterDetailViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.renter_detail.RenterDetailFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/nameTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{renter.name}"
+                tools:text="Nicolas"
+                android:drawablePadding="10dp"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                app:drawableEndCompat="@drawable/baseline_edit_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/statusTxt" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/statusTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="AL DIA"
+                android:minWidth="108dp"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                app:shapeAppearance="?attr/shapeAppearanceCornerLarge"
+                android:text="@{fragment.setTextStatus(renter.status)}"
+                app:chipBackgroundColor="@{fragment.setStatusColor(renter.status)}"
+                app:chipStrokeColor="@{fragment.setStatusColor(renter.status)}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/contract_timeTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{@string/renter_contract_time(renter.contractTime)}"
+                tools:text="6 meses"
+                android:textColor="?android:attr/textColorSecondary"
+                android:drawablePadding="10dp"
+                android:layout_marginTop="20dp"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:drawableStartCompat="@drawable/calendar_month_24px"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nameTxt"
+                app:layout_constraintEnd_toStartOf="@id/floorTxt" />
+
+            <TextView
+                android:id="@+id/floorTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{@string/renter_floor(renter.floor)}"
+                tools:text="2 piso"
+                android:textColor="?android:attr/textColorSecondary"
+                android:drawablePadding="10dp"
+                android:layout_marginTop="20dp"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:drawableStartCompat="@drawable/floor_24px"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nameTxt"
+                app:layout_constraintStart_toEndOf="@id/contract_timeTxt" />
+
+            <TextView
+                android:id="@+id/membersTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{@string/renter_members(renter.members)}"
+                tools:text="3 integrantes"
+                android:textColor="?android:attr/textColorSecondary"
+                android:drawablePadding="10dp"
+                android:layout_marginTop="10dp"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:drawableStartCompat="@drawable/member_24px"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/contract_timeTxt"
+                app:layout_constraintEnd_toStartOf="@id/flat_typeTxt" />
+
+            <TextView
+                android:id="@+id/flat_typeTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{renter.flatType}"
+                tools:text="Minidepartamento"
+                android:textColor="?android:attr/textColorSecondary"
+                android:drawablePadding="10dp"
+                android:layout_marginTop="10dp"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:drawableStartCompat="@drawable/apartment_24px"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/floorTxt"
+                app:layout_constraintStart_toEndOf="@id/membersTxt" />
+
+            <TextView
+                android:id="@+id/placeTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{renter.place}"
+                tools:text="Encantada"
+                android:textColor="?android:attr/textColorSecondary"
+                android:drawablePadding="10dp"
+                android:layout_marginTop="10dp"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:drawableStartCompat="@drawable/baseline_location_on_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/membersTxt"
+                app:layout_constraintEnd_toStartOf="@id/flat_typeTxt" />
+
+            <!--Divider-->
+            <View
+                android:id="@+id/divider"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="?attr/dividerHorizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/placeTxt"
+                app:layout_constraintBottom_toTopOf="@id/rent_services_dateTxt"
+                android:layout_marginTop="20dp" />
+            <!--End Divider-->
+
+            <TextView
+                android:id="@+id/rent_services_dateTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:servicePaymentDay="@{renter}"
+                tools:text="Servicios al 10 de cada mes"
+                android:drawablePadding="10dp"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="?android:attr/textColorSecondary"
+                app:drawableStartCompat="@drawable/baseline_check_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                android:layout_marginTop="20dp" />
+
+            <TextView
+                android:id="@+id/rent_dateTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:rentPaymentDay="@{renter}"
+                tools:text="Alquiler al 01 de cada mes"
+                android:drawablePadding="10dp"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="?android:attr/textColorSecondary"
+                app:drawableStartCompat="@drawable/baseline_check_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rent_services_dateTxt"
+                android:layout_marginTop="10dp" />
+
+            <!--Divider-->
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="?attr/dividerHorizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rent_dateTxt"
+                android:layout_marginTop="20dp" />
+            <!--End Divider-->
+
+            <TextView
+                android:id="@+id/payment_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Historial de pagos"
+                style="@style/Widget.Cobrateloapp.TextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider2"
+                android:layout_marginTop="20dp" />
+
+            <!--CARD OF RENT PAYMENT HERE-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rent_payment_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="5dp"
+                app:cardCornerRadius="10dp"
+                style="@style/Widget.Material3.CardView.Elevated"
+                app:cardBackgroundColor="@color/design_default_color_on_primary"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/payment_history">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:id="@+id/rent_payment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pago de alquiler"
+                        android:textStyle="bold"
+                        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:drawableEndCompat="@drawable/sad_face_24px"
+                        android:drawablePadding="20dp" />
+
+                    <TextView
+                        android:id="@+id/rent_payment_pendingTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pendiente: S/. 500.00"
+                        style="@style/TextAppearance.MaterialComponents.Body1"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/rent_payment" />
+
+                    <TextView
+                        android:id="@+id/rent_payment_pending_dateTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vencido: 01/08/23"
+                        style="@style/TextAppearance.MaterialComponents.Body1"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintEnd_toStartOf="@id/arrowImg1"
+                        app:layout_constraintTop_toBottomOf="@id/rent_payment" />
+
+                    <ImageView
+                        android:id="@+id/arrowImg1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_arrow_forward_24"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--CARD OF RENT SERVICES PAYMENT HERE-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/rent_service_payment_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="5dp"
+                app:cardCornerRadius="10dp"
+                style="@style/Widget.Material3.CardView.Elevated"
+                app:cardBackgroundColor="@color/design_default_color_on_primary"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rent_payment_card">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:id="@+id/rent_service_payment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pago de servicios"
+                        android:textStyle="bold"
+                        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:drawableEndCompat="@drawable/happy_face_24px"
+                        android:drawablePadding="20dp" />
+
+                    <TextView
+                        android:id="@+id/rent_service_payment_pendingTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pendiente: S/. 00.00"
+                        style="@style/TextAppearance.MaterialComponents.Body1"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/rent_service_payment" />
+
+                    <TextView
+                        android:id="@+id/rent_service_payment_pending_dateTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vencido: 16/10/23"
+                        style="@style/TextAppearance.MaterialComponents.Body1"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="15dp"
+                        app:layout_constraintEnd_toStartOf="@id/arrowImg2"
+                        app:layout_constraintTop_toBottomOf="@id/rent_service_payment" />
+
+                    <ImageView
+                        android:id="@+id/arrowImg2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_arrow_forward_24"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--Divider-->
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="?attr/dividerHorizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rent_service_payment_card"
+                android:layout_marginTop="30dp" />
+            <!--End Divider-->
+
+            <TextView
+                android:id="@+id/summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Resumen"
+                style="@style/Widget.Cobrateloapp.TextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider3"
+                android:layout_marginTop="20dp" />
+
+            <!--FIRST ROW-->
+            <TextView
+                android:id="@+id/rent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Alquiler"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/summary"
+                app:layout_constraintEnd_toStartOf="@id/rent_amountTxt"
+                android:layout_marginTop="20dp" />
+
+            <TextView
+                android:id="@+id/rent_amountTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{@string/renter_summary_amount(viewModel.getTotalPendingRentPayments())}"
+                tools:text="S/. 500.00"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:gravity="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/summary"
+                app:layout_constraintStart_toEndOf="@id/rent"
+                android:layout_marginTop="20dp" />
+
+            <!--SECOND ROW-->
+            <TextView
+                android:id="@+id/water_service"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Servicio de agua"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rent"
+                app:layout_constraintEnd_toStartOf="@id/rent_amountTxt"
+                android:layout_marginTop="20dp" />
+
+            <TextView
+                android:id="@+id/water_amountTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{@string/renter_summary_amount(viewModel.getTotalPendingWaterPayments())}"
+                tools:text="S/. 33.40"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:gravity="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rent_amountTxt"
+                app:layout_constraintStart_toEndOf="@id/water_service"
+                android:layout_marginTop="20dp" />
+
+            <!--THIRD ROW-->
+            <TextView
+                android:id="@+id/energy_service"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Servicio de luz"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/water_service"
+                app:layout_constraintEnd_toStartOf="@id/energy_amountTxt"
+                android:layout_marginTop="20dp" />
+
+            <TextView
+                android:id="@+id/energy_amountTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{@string/renter_summary_amount(viewModel.getTotalPendingEnergyPayments())}"
+                tools:text="S/. 83.00"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:gravity="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/water_amountTxt"
+                app:layout_constraintStart_toEndOf="@id/energy_service"
+                android:layout_marginTop="20dp" />
+
+            <!--FOURTH ROW-->
+            <TextView
+                android:id="@+id/total"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Total"
+                style="@style/Widget.Cobrateloapp.TextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/energy_service"
+                app:layout_constraintEnd_toStartOf="@id/total_amountTxt"
+                android:layout_marginTop="20dp" />
+
+            <TextView
+                android:id="@+id/total_amountTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{@string/renter_summary_amount(viewModel.getTotal(rentAmountTxt.text, waterAmountTxt.text, energyAmountTxt.text))}"
+                tools:text="S/. 616.00"
+                style="@style/Widget.Cobrateloapp.TextView"
+                android:gravity="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/energy_amountTxt"
+                app:layout_constraintStart_toEndOf="@id/total"
+                android:layout_marginTop="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/copy_summary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:layout_marginVertical="30dp"
+                android:text="Copiar texto de cobranza"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/total" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>

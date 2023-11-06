@@ -1,0 +1,28 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Cobrateloapp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox
+        </item>
+        <item name="buttonCompat">@style/Widget.Material3.Button</item>
+    </style>
+
+    <style name="Theme.Cobrateloapp" parent="Base.Theme.Cobrateloapp" />
+
+    <style name="DialogTheme" parent="android:Theme.Material.Dialog">
+        <!-->
+        <item name="android:colorAccent">@color/purpleXD</item>
+        <!-->
+    </style>
+
+    <style name="Theme.Cobrateloapp.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Cobrateloapp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Cobrateloapp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>
