@@ -41,8 +41,8 @@ class RenterDetailViewModel @Inject constructor(
         val allServiceHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(renterRequested.id)
         //filter by only pending
         val onlyPending = allServiceHistory.filter { !it.status }
-        //sum all rows by only ones that have as a concept "agua"
-        val totalWater = onlyPending.filter { it.concept == "agua" }.sumOf { it.amount }
+        //sum all rows by its water amount attribute
+        val totalWater = onlyPending.sumOf { it.waterAmount }
         //return sum
         return totalWater.toString()
     }
@@ -51,11 +51,11 @@ class RenterDetailViewModel @Inject constructor(
     fun getTotalPendingEnergyPayments(): String {
         //get all service payments history
         val allServiceHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(renterRequested.id)
-        //filter by only pending and concept equal to <<luz>>
-        val onlyEnergyPending = allServiceHistory.filter { !it.status }.filter { it.concept == "luz" }
+        //filter by only pending
+        val onlyEnergyPending = allServiceHistory.filter { !it.status }
 
-        //sum it's amount attribute
-        val totalEnergy = onlyEnergyPending.sumOf { it.amount }
+        //sum it's energy amount attribute
+        val totalEnergy = onlyEnergyPending.sumOf { it.energyAmount }
 
         //return sum
         return totalEnergy.toString()

@@ -44,8 +44,8 @@ class PendingServicePayAdapter(
             oldItem: PendingServicePayUI,
             newItem: PendingServicePayUI
         ): Boolean {
-            return oldItem.amount == newItem.amount
-                    && oldItem.concept == newItem.concept
+            return oldItem.energyAmount == newItem.energyAmount
+                    && oldItem.waterAmount == newItem.waterAmount
                     && oldItem.checked == newItem.checked
                     && oldItem.enabled == newItem.enabled
         }

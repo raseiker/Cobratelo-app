@@ -19,6 +19,8 @@
     <string name="renter_services_payment">Servicios al %s de cada mes</string>
     <string name="renter_rent_payment">Alquiler al %s de cada mes</string>
     <string name="renter_summary_amount">S/. %s</string>
+    <string name="water_lbl">agua</string>
+    <string name="energy_lbl">luz</string>
     <string name="add_energy_title">Advertencia</string>
     <string name="add_energy_message">You don\'t set an energy consumption yet. Do you want to set up now ?</string>
     <string name="add_energy_positive">Set up now</string>

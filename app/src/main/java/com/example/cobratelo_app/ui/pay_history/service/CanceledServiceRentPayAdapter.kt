@@ -45,8 +45,8 @@ class CanceledServiceRentPayAdapter(
             newItem: CanceledServicePayUI
         ): Boolean {
             return oldItem.date == newItem.date
-                    && oldItem.concept == newItem.concept
-                    && oldItem.amount == newItem.amount
+                    && oldItem.energyAmount == newItem.energyAmount
+                    && oldItem.waterAmount == newItem.waterAmount
         }
 
     }

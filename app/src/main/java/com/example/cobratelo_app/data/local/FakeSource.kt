@@ -140,49 +140,49 @@ object FakeSource {
             ServicePayHistory(
                 id = 1,
                 date = "11/01/23",
-                concept = "agua",
-                amount = 45.0,
+                energyAmount = 75.0,
+                waterAmount = 25.0,
                 status = false,
                 renterId = 5
             ),
             ServicePayHistory(
                 id = 2,
-                date = "11/01/23",
-                concept = "luz",
-                amount = 60.0,
+                date = "11/02/23",
+                energyAmount = 60.0,
+                waterAmount = 40.5,
                 status = false,
                 renterId = 5
             ),
             ServicePayHistory(
                 id = 3,
-                date = "11/02/23",
-                concept = "agua",
-                amount = 40.0,
+                date = "11/03/23",
+                energyAmount = 62.0,
+                waterAmount = 40.0,
                 status = false,
                 renterId = 5
             ),
             ServicePayHistory(
                 id = 4,
-                date = "11/02/23",
-                concept = "luz",
-                amount = 60.0,
+                date = "11/04/23",
+                energyAmount = 65.0,
+                waterAmount = 50.0,
                 status = true,
                 renterId = 5
             ),
             ServicePayHistory(
                 id = 5,
-                date = "11/03/23",
-                concept = "agua",
-                amount = 45.0,
+                date = "11/05/23",
+                energyAmount = 70.0,
+                waterAmount = 45.0,
                 status = true,
-                renterId = 4
+                renterId = 5
             ),
             ServicePayHistory(
-                id = 5,
+                id = 6,
                 date = "11/03/23",
-                concept = "luz",
-                amount = 45.0,
-                status = true,
+                energyAmount = 50.0,
+                waterAmount = 45.0,
+                status = false,
                 renterId = 4
             ),
         )

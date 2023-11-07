@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.example.cobratelo_app.R
 import com.example.cobratelo_app.databinding.FragmentCanceledServicePayBinding
 
@@ -28,6 +30,7 @@ class CanceledServicePayFragment : Fragment() {
         binding ?.apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = fViewModel
+            canceledServicePaymentsRv.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
             canceledServicePaymentsRv.adapter = CanceledServiceRentPayAdapter()
         }
     }
