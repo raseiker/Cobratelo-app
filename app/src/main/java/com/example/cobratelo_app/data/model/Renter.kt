@@ -6,10 +6,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 data class Renter(
-    val id: Int,
+    val id: String,
     val name: String,
     val place: String,
-    val desc: String,//this is new
+    val desc: String = "",//this is new
     val createdAt: String,
     val status: Boolean = true,//by default a renter is up to date
     val contractTime: String,

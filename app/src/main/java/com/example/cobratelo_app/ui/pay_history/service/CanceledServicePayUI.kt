@@ -1,7 +1,7 @@
 package com.example.cobratelo_app.ui.pay_history.service
 
 data class CanceledServicePayUI(
-    val id: Int,
+    val id: String,
     val date: String,
     val energyAmount: String,
     val waterAmount: String,

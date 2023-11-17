@@ -2,11 +2,14 @@ package com.example.cobratelo_app.ui.consumption_renter
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.example.cobratelo_app.data.local.FakeSource
 import com.example.cobratelo_app.data.model.RenterConsumption
+import com.example.cobratelo_app.data.network.toRenter
 import com.example.cobratelo_app.data.repo.consumption.personal.RenterConsumptionRepository
 import com.example.cobratelo_app.data.repo.renter.RenterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -19,7 +22,7 @@ class UpdateRenterConsumptionViewModel @Inject constructor (
     //get all renter names
     fun getAllRenterNames(): List<String>? {
         //get all renter
-        val renterList = renterRepository.getAllRenter().value
+        val renterList = renterRepository.getAllRenter().map { it.map { it.toRenter() } }.asLiveData().value
 
         //filter by name and return it
         return renterList?.map { it.name }.also {
@@ -35,7 +38,7 @@ class UpdateRenterConsumptionViewModel @Inject constructor (
 
         //create renter consumption object
         val newConsumption = RenterConsumption(
-            id = Random.nextInt(renterSelected.id,20),
+            id = 1,
             kwh = kwh.toInt(),
             date = date,
             water = water.toDouble(),

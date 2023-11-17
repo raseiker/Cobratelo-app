@@ -9,7 +9,11 @@ import com.example.cobratelo_app.data.repo.pay_history.RentPayHistoryRepositoryI
 import com.example.cobratelo_app.data.repo.pay_history.ServicePayHistoryRepository
 import com.example.cobratelo_app.data.repo.pay_history.ServicePayHistoryRepositoryImpl
 import com.example.cobratelo_app.data.repo.renter.RenterRepository
+import com.example.cobratelo_app.data.repo.renter.RenterFakeRepositoryImpl
 import com.example.cobratelo_app.data.repo.renter.RenterRepositoryImpl
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,26 +26,30 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRenterRepository(
+    fun provideFirestore() = Firebase.firestore
 
+    @Provides
+    @Singleton
+    fun provideRenterRepository(
+        db: FirebaseFirestore
     ): RenterRepository {
-        return RenterRepositoryImpl()
+        return RenterRepositoryImpl(db)
     }
 
     @Provides
     @Singleton
     fun provideRentPayHistoryRepository(
-
+        db: FirebaseFirestore
     ): RentPayHistoryRepository{
-        return RentPayHistoryRepositoryImpl()
+        return RentPayHistoryRepositoryImpl(db)
     }
 
     @Provides
     @Singleton
     fun provideServicePayHistoryRepository(
-
+        db: FirebaseFirestore
     ): ServicePayHistoryRepository{
-        return ServicePayHistoryRepositoryImpl()
+        return ServicePayHistoryRepositoryImpl(db)
     }
 
     @Provides

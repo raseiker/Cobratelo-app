@@ -23,7 +23,7 @@ object FakeSource {
     val renterList = MutableLiveData(
         listOf(
             Renter(
-                id = 1,
+                id = "1",
                 name = "Nicolas",
                 place = "Encantada",
                 desc = "77 kwh consumido al 07/23",
@@ -38,7 +38,7 @@ object FakeSource {
                 rentAmount = 500,
             ),
             Renter(
-                id = 2,
+                id = "2",
                 name = "Reyna",
                 place = "Encantada",
                 desc = "80 kwh consumido al 07/23",
@@ -53,7 +53,7 @@ object FakeSource {
                 rentAmount = 350,
             ),
             Renter(
-                id = 3,
+                id = "3",
                 name = "Marco",
                 place = "Bocanegra",
                 desc = "05 kwh consumido al 11/23",
@@ -68,7 +68,7 @@ object FakeSource {
                 rentAmount = 550,
             ),
             Renter(
-                id = 4,
+                id = "4",
                 name = "Iker",
                 place = "Bocanegra",
                 desc = "05 kwh consumido al 11/23",
@@ -83,7 +83,7 @@ object FakeSource {
                 rentAmount = 650,
             ),
             Renter(
-                id = 5,
+                id = "5",
                 name = "Edita",
                 place = "Bocanegra",
                 desc = "05 kwh consumido al 11/23",
@@ -103,34 +103,34 @@ object FakeSource {
     val rentPayHistoryList = MutableLiveData(
         listOf(
             RentPayHistory(
-                id = 1,
+                id = "1",
                 date = "11/07/23",
                 status = true,
-                renterId = 5
+                renterId = "5"
             ),
             RentPayHistory(
-                id = 2,
+                id = "2",
                 date = "11/08/23",
                 status = false,
-                renterId = 5
+                renterId = "5"
             ),
             RentPayHistory(
-                id = 3,
+                id = "3",
                 date = "11/09/23",
                 status = false,
-                renterId = 5
+                renterId = "5"
             ),
             RentPayHistory(
-                id = 4,
+                id = "4",
                 date = "11/10/23",
                 status = true,
-                renterId = 5
+                renterId = "5"
             ),
             RentPayHistory(
-                id = 5,
+                id = "5",
                 date = "11/11/23",
                 status = false,
-                renterId = 5
+                renterId = "5"
             )
         )
     )
@@ -138,52 +138,52 @@ object FakeSource {
     val servicePayHistoryList = MutableLiveData(
         listOf(
             ServicePayHistory(
-                id = 1,
+                id = "1",
                 date = "11/01/23",
                 energyAmount = 75.0,
                 waterAmount = 25.0,
                 status = false,
-                renterId = 5
+                renterId = "5"
             ),
             ServicePayHistory(
-                id = 2,
+                id = "2",
                 date = "11/02/23",
                 energyAmount = 60.0,
                 waterAmount = 40.5,
                 status = false,
-                renterId = 5
+                renterId = "5"
             ),
             ServicePayHistory(
-                id = 3,
+                id = "3",
                 date = "11/03/23",
                 energyAmount = 62.0,
                 waterAmount = 40.0,
                 status = false,
-                renterId = 5
+                renterId = "5"
             ),
             ServicePayHistory(
-                id = 4,
+                id = "4",
                 date = "11/04/23",
                 energyAmount = 65.0,
                 waterAmount = 50.0,
                 status = true,
-                renterId = 5
+                renterId = "5"
             ),
             ServicePayHistory(
-                id = 5,
+                id = "5",
                 date = "11/05/23",
                 energyAmount = 70.0,
                 waterAmount = 45.0,
                 status = true,
-                renterId = 5
+                renterId = "5"
             ),
             ServicePayHistory(
-                id = 6,
+                id = "6",
                 date = "11/03/23",
                 energyAmount = 50.0,
                 waterAmount = 45.0,
                 status = false,
-                renterId = 4
+                renterId = "4"
             ),
         )
     )

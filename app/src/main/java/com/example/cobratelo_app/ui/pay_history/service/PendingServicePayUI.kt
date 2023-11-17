@@ -1,7 +1,7 @@
 package com.example.cobratelo_app.ui.pay_history.service
 
 data class PendingServicePayUI(
-    val id: Int,//unique id
+    val id: String,//unique id
     val date: String,//from DB
     val energyAmount: String,//from DB
     val waterAmount: String,//from DB

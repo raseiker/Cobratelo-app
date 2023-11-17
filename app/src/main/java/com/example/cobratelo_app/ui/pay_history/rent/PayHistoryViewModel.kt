@@ -4,9 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.example.cobratelo_app.data.model.RentPayHistory
 import com.example.cobratelo_app.data.model.toCanceledRentUI
 import com.example.cobratelo_app.data.model.toPendingRentUI
+import com.example.cobratelo_app.data.network.toRentPayHistory
+import com.example.cobratelo_app.data.network.toRenter
 import com.example.cobratelo_app.data.repo.pay_history.RentPayHistoryRepository
 import com.example.cobratelo_app.data.repo.renter.RenterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +21,7 @@ class PayHistoryViewModel @Inject constructor(
     private val renterRepository: RenterRepository,
 ) : ViewModel() {
     // TODO: Implement the ViewModel
-    private var renterId: Int = -1
+    private var renterId: String? = null
     private var _rentHistory: List<RentPayHistory> = emptyList()
     val rentHistory get() = _rentHistory
 
@@ -28,7 +31,7 @@ class PayHistoryViewModel @Inject constructor(
     private var _pending : MutableList<PendingRentPayUI> = mutableListOf()
     val pending: List<PendingRentPayUI> get() = _pending
 
-    fun setRenterId(renterId: Int) {
+    fun setRenterId(renterId: String) {
         this.renterId = renterId
         setRentHistoryByRenterId(renterId)
         getPendingRentPayments()
@@ -51,9 +54,11 @@ class PayHistoryViewModel @Inject constructor(
 
     //search list of rent pay history by id
     private fun getPendingRentPayments() {
-        if (renterId != -1) {
+        if (renterId != null) {
             //get rent amount by its id
-            val renterAmount = renterRepository.getRenterById(renterId).rentAmount
+            val renterAmount = renterRepository.getRenterById(renterId!!)
+                .asLiveData().value
+                ?.toRenter()?.rentAmount
 
             //get rent pending payments by renter id
             val list = _rentHistory.filter { !it.status }
@@ -69,9 +74,11 @@ class PayHistoryViewModel @Inject constructor(
     }
 
     fun getCanceledRentPayments(): List<CanceledRentPayUI>?{
-        return if (renterId != -1) {
+        return if (renterId != null) {
             //get rent amount by renter id
-            val renterAmount = renterRepository.getRenterById(renterId).rentAmount
+            val renterAmount = renterRepository.getRenterById(renterId!!)
+                .asLiveData().value
+                ?.toRenter()?.rentAmount
 
             //get canceled rent payments by its status
             val list = _rentHistory.filter { it.status }
@@ -83,9 +90,11 @@ class PayHistoryViewModel @Inject constructor(
     }
 
     //get all rent history by Id
-    private fun setRentHistoryByRenterId(renterId: Int) {
-        if( renterId != -1)
+    private fun setRentHistoryByRenterId(renterId: String) {
+        if (this.renterId != null)
             _rentHistory = rentPayHistoryRepository.getRentPayHistoryByRenterId(renterId)
+                .asLiveData().value
+                ?.map { it.toRentPayHistory(renterId) }!!
     }
 
     fun enablePayOption(): Boolean {

@@ -23,8 +23,7 @@
             app:destination="@id/rentPayHistoryFragment" />
         <argument
             android:name="renterId"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/rentPayHistoryFragment"
@@ -36,7 +35,7 @@
             app:argType="string" />
         <argument
             android:name="renterId"
-            app:argType="integer" />
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/servicePayHistoryFragment"
@@ -48,7 +47,7 @@
             app:argType="string" />
         <argument
             android:name="renterId"
-            app:argType="integer" />
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/updateRenterConsumptionFragment"

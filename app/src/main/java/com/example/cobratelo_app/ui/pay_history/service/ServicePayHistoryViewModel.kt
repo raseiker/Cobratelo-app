@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.example.cobratelo_app.data.model.ServicePayHistory
 import com.example.cobratelo_app.data.model.toCanceledServiceUI
 import com.example.cobratelo_app.data.model.toPendingServiceUI
+import com.example.cobratelo_app.data.network.toServicePayHistory
 import com.example.cobratelo_app.data.repo.pay_history.ServicePayHistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,7 +17,7 @@ import javax.inject.Inject
 class ServicePayHistoryViewModel @Inject constructor(
     private val servicePayHistoryRepository: ServicePayHistoryRepository,
 ) : ViewModel() {
-    private var renterId: Int = -1
+    private var renterId: String? = null
 
     private var rentHistory: List<ServicePayHistory> = emptyList()
 
@@ -25,7 +27,7 @@ class ServicePayHistoryViewModel @Inject constructor(
     private var pendingBackUp: MutableList<PendingServicePayUI> = mutableListOf()
 
 
-    fun setRenterId(renterId: Int) {
+    fun setRenterId(renterId: String) {
         this.renterId = renterId
         setRentHistoryByRenterId(renterId)
         getPendingServicePayments()
@@ -33,14 +35,19 @@ class ServicePayHistoryViewModel @Inject constructor(
     }
 
     //get all rent history by Id
-    private fun setRentHistoryByRenterId(renterId: Int) {
-        if( renterId != -1)
+    private fun setRentHistoryByRenterId(renterId: String) {
+        if( this.renterId != null)
             rentHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(renterId)
+                .asLiveData().value
+                ?.map { it.toServicePayHistory(renterId) }!!
     }
 
-    private fun getPendingServicePayments() {
+    private fun getPendingServicePayments() = renterId?.let { id ->
+
         //obtain all history service payments
-        val serviceHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(renterId)
+        val serviceHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(id)
+            .asLiveData().value
+            ?.map { it.toServicePayHistory(id) }!!
 
         //filter by pending pays only
         val pendingService = serviceHistory.filter { !it.status }
@@ -57,17 +64,18 @@ class ServicePayHistoryViewModel @Inject constructor(
     }
 
     fun getCanceledServicePayments(): List<CanceledServicePayUI>? {
-        return if (renterId != -1) {
+        return renterId?.let {id ->
             //get history by renter id
-            val paymentHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(renterId)
+            val paymentHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(id)
+                .asLiveData().value
+                ?.map { it.toServicePayHistory(id) }
+
             //filter by canceled only
-            val onlyCanceled = paymentHistory.filter { it.status }
+            val onlyCanceled = paymentHistory?.filter { it.status }
 
             //create list UI
-            onlyCanceled.map { it.toCanceledServiceUI() }
-        } else {
-            emptyList()
-        }
+            onlyCanceled?.map { it.toCanceledServiceUI() }
+        } ?: emptyList()
     }
 
     fun enablePayOption(): Boolean {

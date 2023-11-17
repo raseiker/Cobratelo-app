@@ -14,6 +14,7 @@ class RenterConsumptionRepositoryImpl(): RenterConsumptionRepository {
     }
 
     override fun getConsumptionByRenterId(renterId: Int): RenterConsumption {
-        return FakeSource.renterConsumption.value?.first { it.renterId == renterId }!!
+        return FakeSource.renterConsumption.value?.first()!!
+//        return FakeSource.renterConsumption.value?.first { it.renterId == renterId }!!
     }
 }

@@ -28,7 +28,7 @@ class AddRenterViewModel @Inject constructor(
         rentFlatType: String
     ): Boolean {
         val newRenter = Renter(
-            id = 999,
+            id = "999",
             name = rentName,
             place = rentPlace,
             desc = "Not energy consumption set up yet",

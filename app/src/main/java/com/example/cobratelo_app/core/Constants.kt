@@ -16,6 +16,7 @@ val FLAT_TYPE_LIST = listOf("Departamento", "Minidepartamento", "Habitación")
 
 val PAY_HISTORY_TABS = listOf("Pendiente", "Cancelado")
 
+const val TAG = "myLog"
 sealed class RenterStatus(
     val label: String
 ) {
