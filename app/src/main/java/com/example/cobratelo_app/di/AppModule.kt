@@ -9,7 +9,6 @@ import com.example.cobratelo_app.data.repo.pay_history.RentPayHistoryRepositoryI
 import com.example.cobratelo_app.data.repo.pay_history.ServicePayHistoryRepository
 import com.example.cobratelo_app.data.repo.pay_history.ServicePayHistoryRepositoryImpl
 import com.example.cobratelo_app.data.repo.renter.RenterRepository
-import com.example.cobratelo_app.data.repo.renter.RenterFakeRepositoryImpl
 import com.example.cobratelo_app.data.repo.renter.RenterRepositoryImpl
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -55,16 +54,16 @@ object AppModule {
     @Provides
     @Singleton
     fun provideRenterConsumptionRepository(
-
+        db: FirebaseFirestore
     ): RenterConsumptionRepository {
-        return RenterConsumptionRepositoryImpl()
+        return RenterConsumptionRepositoryImpl(db)
     }
 
     @Provides
     @Singleton
     fun provideEnergyConsumption(
-
+        db: FirebaseFirestore
     ): EnergyConsumptionRepository {
-        return EnergyConsumptionRepositoryImpl()
+        return EnergyConsumptionRepositoryImpl(db)
     }
 }

@@ -4,26 +4,39 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.cobratelo_app.core.TAG
 import com.example.cobratelo_app.data.model.RentPayHistory
 import com.example.cobratelo_app.data.model.toCanceledRentUI
 import com.example.cobratelo_app.data.model.toPendingRentUI
+import com.example.cobratelo_app.data.model.toRentPayHistoryEntity
 import com.example.cobratelo_app.data.network.toRentPayHistory
-import com.example.cobratelo_app.data.network.toRenter
 import com.example.cobratelo_app.data.repo.pay_history.RentPayHistoryRepository
-import com.example.cobratelo_app.data.repo.renter.RenterRepository
+import com.example.cobratelo_app.ui.ResponseUI
+import com.example.cobratelo_app.ui.pay_history.pay_confirmation.rent.RentPayConfirmationUI
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class PayHistoryViewModel @Inject constructor(
     private val rentPayHistoryRepository: RentPayHistoryRepository,
-    private val renterRepository: RenterRepository,
 ) : ViewModel() {
     // TODO: Implement the ViewModel
-    private var renterId: String? = null
-    private var _rentHistory: List<RentPayHistory> = emptyList()
-    val rentHistory get() = _rentHistory
+    var renterId: String? = null
+        private set
+    var renterAmount: Int? = null
+        private set
+    var renterName: String? = null
+        private set
+
+    private var _rentHistory: List<RentPayHistory>? = null
 
     private var _pendingRentPayUi = MutableLiveData<MutableList<PendingRentPayUI>>()
     val pendingRentPayUI: LiveData<MutableList<PendingRentPayUI>> get() = _pendingRentPayUi
@@ -31,9 +44,15 @@ class PayHistoryViewModel @Inject constructor(
     private var _pending : MutableList<PendingRentPayUI> = mutableListOf()
     val pending: List<PendingRentPayUI> get() = _pending
 
-    fun setRenterId(renterId: String) {
-        this.renterId = renterId
-        setRentHistoryByRenterId(renterId)
+    private var _stateUI: MutableStateFlow<ResponseUI<Boolean>> = MutableStateFlow(ResponseUI.Loading)
+    val stateUI: StateFlow<ResponseUI<Boolean>> = _stateUI.asStateFlow()
+
+    fun setRenterDetails(renterId: String, renterAmount: Int, renterName: String)= viewModelScope.launch {
+        this@PayHistoryViewModel.renterId = renterId
+        this@PayHistoryViewModel.renterAmount = renterAmount
+        this@PayHistoryViewModel.renterName = renterName
+        val job = setRentHistoryByRenterId(renterId)
+        job.join()
         getPendingRentPayments()
         Log.d("setRenterId", "setRenterId: $renterId")
     }
@@ -51,20 +70,21 @@ class PayHistoryViewModel @Inject constructor(
 
     }
 
+    //get all rent history by Id
+    private fun setRentHistoryByRenterId(renterId: String) = viewModelScope.launch {
+        _rentHistory = rentPayHistoryRepository.getRentPayHistoryByRenterId(renterId)
+            .firstOrNull()
+            ?.map { it.toRentPayHistory(renterId) } ?: emptyList()
+    }
 
     //search list of rent pay history by id
-    private fun getPendingRentPayments() {
-        if (renterId != null) {
-            //get rent amount by its id
-            val renterAmount = renterRepository.getRenterById(renterId!!)
-                .asLiveData().value
-                ?.toRenter()?.rentAmount
-
+    private fun getPendingRentPayments() = renterId?.let {
+        viewModelScope.launch {
             //get rent pending payments by renter id
-            val list = _rentHistory.filter { !it.status }
+            val list = _rentHistory?.filter { !it.status }
 
             //create pending rent pay UI list
-            _pending = list.map { it.toPendingRentUI(renterAmount.toString()) } as MutableList
+            _pending = list?.map { it.toPendingRentUI(renterAmount!!.toString()) } as MutableList
 
             //find newer and enable it
             if (pending.isNotEmpty()) _pending[0] = _pending[0].copy(enabled = true)
@@ -73,28 +93,11 @@ class PayHistoryViewModel @Inject constructor(
         }
     }
 
-    fun getCanceledRentPayments(): List<CanceledRentPayUI>?{
-        return if (renterId != null) {
-            //get rent amount by renter id
-            val renterAmount = renterRepository.getRenterById(renterId!!)
-                .asLiveData().value
-                ?.toRenter()?.rentAmount
-
+    fun getCanceledRentPayments(): List<CanceledRentPayUI>? = renterId?.let {
             //get canceled rent payments by its status
-            val list = _rentHistory.filter { it.status }
+            val list = _rentHistory?.filter { it.status }
 
-            list.map { it.toCanceledRentUI(renterAmount.toString()) }
-        } else {
-            emptyList()
-        }
-    }
-
-    //get all rent history by Id
-    private fun setRentHistoryByRenterId(renterId: String) {
-        if (this.renterId != null)
-            _rentHistory = rentPayHistoryRepository.getRentPayHistoryByRenterId(renterId)
-                .asLiveData().value
-                ?.map { it.toRentPayHistory(renterId) }!!
+            list?.map { it.toCanceledRentUI(renterAmount!!.toString()) }
     }
 
     fun enablePayOption(): Boolean {
@@ -104,7 +107,7 @@ class PayHistoryViewModel @Inject constructor(
     private fun replaceItem(item: PendingRentPayUI, msg: String) {
         val itemIndex = _pending.indexOfFirst { it.date == item.date }
         _pending[itemIndex] = item
-        Log.d("onCheckedChange", _pending.toString() + msg)
+        Log.d(TAG, "checked change: $_pending$msg")
     }
 
 
@@ -151,5 +154,37 @@ class PayHistoryViewModel @Inject constructor(
         }
     }
 
+    fun checkedPendingList() = pending.filter { it.checked }
+        .map { RentPayConfirmationUI(
+            id = it.id,
+            date = it.date,
+            concept = "RENTA",
+            amount = it.amount
+        ) }
+    fun getCurrentTime(): String = LocalDateTime.now().format(DateTimeFormatter
+        .ofPattern("dd/M/yyyy HH:m"))
 
+    fun getTotalSelectedPays(): String = pending.filter { it.checked }
+        .sumOf { it.amount.toInt() }
+        .toString()
+
+    fun confirmPay() = viewModelScope.launch {
+        //catch only checked rent pending
+        val selectedPays = pending.filter { it.checked }
+
+        //call repo
+        _stateUI.value = rentPayHistoryRepository.updatePendingRent (
+            selectedList = selectedPays.map { it.toRentPayHistory(renterId!!) }
+                .map { it.toRentPayHistoryEntity() },
+            renterId = renterId!!
+        )
+        //return boolean and react accordingly
+    }
+
+}
+
+fun main() {
+    val time = LocalDateTime.now()
+
+    println(time.format(DateTimeFormatter.ofPattern("dd/M/yyyy HH:m")))
 }

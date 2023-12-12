@@ -10,7 +10,7 @@ import java.util.Calendar
 import java.util.Locale
 
 data class EnergyConsumption(
-    val id: Int,
+    val id: String = "",
     val place: String,
     val energyCharge: Double,
     val unitValue: Double,

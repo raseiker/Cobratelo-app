@@ -3,8 +3,8 @@ package com.example.cobratelo_app.data.network
 import com.example.cobratelo_app.data.model.ServicePayHistory
 
 data class ServicePayHistoryEntity(
-    val id: String,
-    val date: String,
+    val id: String = "",
+    val date: String = "",
     val energyAmount: Double = 0.0,
     val waterAmount: Double = 0.0,
     val status: Boolean = false

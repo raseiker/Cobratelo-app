@@ -13,5 +13,5 @@ interface RenterRepository {
 
     fun getRenterByName(renterName: String): Renter
 
-    fun insertRenter(renter: Renter): Boolean
+    suspend fun insertRenter(renter: RenterEntity): Boolean
 }

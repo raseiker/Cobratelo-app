@@ -7,13 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.cobratelo_app.R
+import com.example.cobratelo_app.core.TAG
 import com.example.cobratelo_app.data.model.toEnergyConsumptionUI
+import com.example.cobratelo_app.data.network.toEnergyConsumption
 import com.example.cobratelo_app.databinding.FragmentEnergySummaryBinding
 import com.example.cobratelo_app.ui.ResponseUI
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class EnergySummaryFragment : Fragment() {
@@ -37,19 +43,24 @@ class EnergySummaryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
 
-            viewModel.getEnergyConsumption()
+            //viewModel.getEnergyConsumption()
+            lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    viewModel.stateUI.collect { stateUI ->
+                        when (stateUI) {
+                            is ResponseUI.Error -> showAddEnergyConsumptionDialog()
+                            ResponseUI.Loading -> Log.d(TAG, "im loading in energy fragment")
+                            is ResponseUI.Success -> {
+                                energy = stateUI.data.toEnergyConsumption().toEnergyConsumptionUI()
+                                onNavigateToUpdateGeneralConsumption.setOnClickListener {
+                                    findNavController().navigate(R.id.action_energySummaryFragment_to_updateGeneralConsumptionFragment)
+                                }
 
-            when (val stateUI = viewModel.stateUI.value) {
-                is ResponseUI.Error -> showAddEnergyConsumptionDialog()
-                ResponseUI.Loading -> Unit
-                is ResponseUI.Success -> {
-                    energy = stateUI.data.toEnergyConsumptionUI()
-                    onNavigateToUpdateGeneralConsumption.setOnClickListener {
-                        findNavController().navigate(R.id.action_energySummaryFragment_to_updateGeneralConsumptionFragment)
-                    }
-
-                    onNavigateToUpdateRenterConsumption.setOnClickListener {
-                        findNavController().navigate(R.id.action_energySummaryFragment_to_updateRenterConsumptionFragment)
+                                onNavigateToUpdateRenterConsumption.setOnClickListener {
+                                    findNavController().navigate(R.id.action_energySummaryFragment_to_updateRenterConsumptionFragment)
+                                }
+                            }
+                        }
                     }
                 }
             }

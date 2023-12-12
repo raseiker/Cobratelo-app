@@ -36,7 +36,7 @@ class RentPayHistoryFragment : Fragment() {
         binding?.apply {
             //set renter name by
             nameTxt.text = navArgs.renterName
-            viewModel.setRenterId(navArgs.renterId)
+            viewModel.setRenterDetails(navArgs.renterId, navArgs.renterAmount, navArgs.renterName)
 
             //set view pager 2 adapter
             viewPager.adapter = RentViewPageAdapter(requireActivity())

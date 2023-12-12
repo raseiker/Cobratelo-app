@@ -1,20 +1,24 @@
 package com.example.cobratelo_app.ui.consumption
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.cobratelo_app.R
 import com.example.cobratelo_app.core.PLACE_LIST
+import com.example.cobratelo_app.core.TAG
 import com.example.cobratelo_app.core.generateMenuDropdown
-import com.example.cobratelo_app.core.getPlaceItems
 import com.example.cobratelo_app.core.showDatePicker
 import com.example.cobratelo_app.core.validateFields
 import com.example.cobratelo_app.databinding.FragmentUpdateGeneralConsumptionBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class UpdateGeneralConsumptionFragment : Fragment() {
@@ -35,7 +39,15 @@ class UpdateGeneralConsumptionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
 
-            validateFields(listOf(tvPlace, tvTotal, tvUnitValue, tvChargeEnergy, tvGeneralConsumptionDate), updateBtn)
+            validateFields(
+                listOf(
+                    tvPlace,
+                    tvTotal,
+                    tvUnitValue,
+                    tvChargeEnergy,
+                    tvGeneralConsumptionDate
+                ), updateBtn
+            )
 
             generateMenuDropdown(place, PLACE_LIST)
 
@@ -44,31 +56,37 @@ class UpdateGeneralConsumptionFragment : Fragment() {
             }
 
             updateBtn.setOnClickListener {
-                val response = updateGeneralEnergyConsumption(
-                    tvPlace.text.toString(),
-                    tvChargeEnergy.text.toString(),
-                    tvUnitValue.text.toString(),
-                    tvGeneralConsumptionDate.text.toString(),
-                    tvTotal.text.toString()
-                )
-                if (response) {
-                    //show confirmation message
-                    //back to energy summary
-                    findNavController().navigateUp()
-                } else {
-                    //show error message
+                lifecycleScope.launch {
+                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                        val response = insertGeneralEnergyConsumption(
+                            tvPlace.text.toString(),
+                            tvChargeEnergy.text.toString(),
+                            tvUnitValue.text.toString(),
+                            tvGeneralConsumptionDate.text.toString(),
+                            tvTotal.text.toString()
+                        )
+                        if (response.await()) {
+                            //show confirmation message
+                            Log.d(TAG, "energy consumption added in fragment: yes")
+                            //back to energy summary
+                            findNavController().navigateUp()
+                        } else {
+                            //show error message
+                            Log.d(TAG, "energy consumption added in fragment doesn't occur")
+                        }
+                    }
                 }
             }
         }
     }
 
-    private fun updateGeneralEnergyConsumption(
+    private fun insertGeneralEnergyConsumption(
         place: String,
         energyCharge: String,
         unitValue: String,
         date: String,
         total: String,
-    ) = viewModel.updateGeneralEnergyConsumption(place, energyCharge, unitValue, date, total)
+    ) = viewModel.insertGeneralEnergyConsumption(place, energyCharge, unitValue, date, total)
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -2,9 +2,12 @@ package com.example.cobratelo_app.ui.consumption
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.cobratelo_app.data.model.EnergyConsumption
+import androidx.lifecycle.viewModelScope
+import com.example.cobratelo_app.core.TAG
+import com.example.cobratelo_app.data.network.EnergyConsumptionEntity
 import com.example.cobratelo_app.data.repo.consumption.general.EnergyConsumptionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,15 +17,14 @@ class UpdateGeneralConsumptionViewModel @Inject constructor(
     // TODO: Implement the ViewModel
 
     //update general energy consumption
-    fun updateGeneralEnergyConsumption(
+    fun insertGeneralEnergyConsumption(
         place: String,
         energyCharge: String,
         unitValue: String,
         date: String,
         total: String,
-    ): Boolean {
-        val newItem = EnergyConsumption(
-            id = 1,
+    ) = viewModelScope.async {
+        val newItem = EnergyConsumptionEntity(
             place = place,
             energyCharge = energyCharge.toDouble(),
             unitValue = unitValue.toDouble(),
@@ -31,7 +33,7 @@ class UpdateGeneralConsumptionViewModel @Inject constructor(
         )
 
         //save into db
-        Log.d("onGeneralConsumption", "updateGeneralEnergyConsumption: $newItem")
-        return energyConsumptionRepository.updateEnergyConsumption(newItem)
+        Log.d(TAG, "new energy consumption in viewModel: $newItem")
+        energyConsumptionRepository.insertEnergyConsumption(newItem)
     }
 }

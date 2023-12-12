@@ -2,22 +2,26 @@ package com.example.cobratelo_app.ui.addRenter
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.cobratelo_app.core.CONTRACT_TIME_LIST
 import com.example.cobratelo_app.core.FLAT_TYPE_LIST
 import com.example.cobratelo_app.core.FLOOR_LIST
 import com.example.cobratelo_app.core.MEMBERS_LIST
 import com.example.cobratelo_app.core.PLACE_LIST
+import com.example.cobratelo_app.core.TAG
 import com.example.cobratelo_app.core.generateMenuDropdown
 import com.example.cobratelo_app.core.showDatePicker
 import com.example.cobratelo_app.core.validateFields
 import com.example.cobratelo_app.databinding.FragmentAddRenterBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddRenterFragment : Fragment() {
@@ -53,10 +57,12 @@ class AddRenterFragment : Fragment() {
             generateMenuDropdown(floor, FLOOR_LIST)
             generateMenuDropdown(flatType, FLAT_TYPE_LIST)
 
+            //set end icon event on texField
             rentDate.setEndIconOnClickListener {
                 showDatePicker(tvRentDate)
             }
 
+            //set end icon event on texField
             rentServicesDate.setEndIconOnClickListener {
                 showDatePicker(tvRentServicesDate)
             }
@@ -64,25 +70,28 @@ class AddRenterFragment : Fragment() {
             //add new renter when click a button
             addRenterBtn.setOnClickListener {
 
-                val response = addNewRenter(
-                    tvName.text.toString().trim(),
-                    tvRentAmount.text.toString().trim(),
-                    tvRentDate.text.toString().trim(),
-                    tvRentServicesDate.text.toString().trim(),
-                    contractTimeTv.text.toString().trim(),
-                    membersTv.text.toString().trim(),
-                    placeTv.text.toString().trim(),
-                    floorTv.text.toString().trim(),
-                    flatTypeTv.text.toString().trim(),
-                )
+                lifecycleScope.launch {
+                    val response = addNewRenter(
+                        tvName.text.toString().trim(),
+                        tvRentAmount.text.toString().trim(),
+                        tvRentDate.text.toString().trim(),
+                        tvRentServicesDate.text.toString().trim(),
+                        contractTimeTv.text.toString().trim(),
+                        membersTv.text.toString().trim(),
+                        placeTv.text.toString().trim(),
+                        floorTv.text.toString().trim(),
+                        flatTypeTv.text.toString().trim(),
+                    )
 
-                if (response) {
-                    //show confirmation dialog
-
-                    //navigate back
-                    findNavController().navigateUp()
-                } else {
-                    //show error
+                    if (response.await()) {
+                        //show confirmation dialog
+                        Log.d(TAG, "renter added in fragment: yes")
+                        //navigate back
+                        findNavController().navigateUp()
+                    } else {
+                        //show error
+                        Log.d(TAG, "renter added in fragment doesn't occur")
+                    }
                 }
             }
         }

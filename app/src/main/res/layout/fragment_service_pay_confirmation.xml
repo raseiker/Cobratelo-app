@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="model"
+            type= "com.example.cobratelo_app.ui.pay_history.service.ServicePayHistoryViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.pay_history.pay_confirmation.rent.RentPayConfirmationFragment"
+        android:paddingHorizontal="15dp">
+
+        <TextView
+            android:id="@+id/confirm_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirmar pago"
+            style="@style/Widget.Cobrateloapp.TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/renter_nameTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Marco 4A"
+            style="@style/TextAppearance.MaterialComponents.Headline3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="100dp" />
+
+        <TextView
+            android:id="@+id/today_Txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{model.getCurrentTime()}"
+            tools:text="11/02/23"
+            android:textStyle="italic"
+            style="@style/TextAppearance.MaterialComponents.Subtitle2"
+            app:layout_constraintTop_toBottomOf="@id/renter_nameTxt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Fecha"
+            android:layout_marginTop="50dp"
+            style="@style/Widget.Cobrateloapp.TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/today_Txt"
+            app:layout_constraintEnd_toStartOf="@id/concept" />
+
+        <TextView
+            android:id="@+id/concept"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Concepto"
+            style="@style/Widget.Cobrateloapp.TextView"
+            android:textAlignment="center"
+            app:layout_constraintStart_toEndOf="@id/date"
+            app:layout_constraintTop_toTopOf="@id/date"
+            app:layout_constraintEnd_toStartOf="@id/amount" />
+
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Monto"
+            style="@style/Widget.Cobrateloapp.TextView"
+            android:textAlignment="textEnd"
+            app:layout_constraintStart_toEndOf="@id/concept"
+            app:layout_constraintTop_toTopOf="@id/concept"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!--Divider-->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="?attr/dividerHorizontal"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/date" />
+        <!--End Divider-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/selected_pays_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:clipToPadding="false"
+            tools:listitem="@layout/selected_pays_item"
+            tools:itemCount="5"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="total"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            app:layout_constraintTop_toBottomOf="@id/selected_pays_rv"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="30dp" />
+
+        <TextView
+            android:id="@+id/total_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{@string/renter_summary_amount(model.getTotalSelectedPays())}"
+            tools:text="S/. 45.00"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
+            app:layout_constraintTop_toTopOf="@id/total"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/pay_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:layout_marginVertical="30dp"
+            android:text="Confirmar pago"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/pay_button"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

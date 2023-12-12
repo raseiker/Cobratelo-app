@@ -17,7 +17,7 @@ data class RenterEntity(
     val status: Boolean = false,
 )
 
-fun RenterEntity.toRenter() = Renter(
+fun RenterEntity.toRenter(status: Boolean = false, desc: String = "") = Renter(
     id = id,
     name = name,
     contractTime = contractTime,
@@ -30,5 +30,5 @@ fun RenterEntity.toRenter() = Renter(
     rentPaymentDate = rentPaymentDate,
     servicesPaymentDate = servicesPaymentDate,
     status = status,
-    desc = ""
+    desc = desc
 )

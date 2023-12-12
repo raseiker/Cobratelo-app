@@ -1,5 +1,7 @@
 package com.example.cobratelo_app.ui.pay_history.rent
 
+import com.example.cobratelo_app.data.model.RentPayHistory
+import com.example.cobratelo_app.data.network.RentPayHistoryEntity
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -17,3 +19,11 @@ fun PendingRentPayUI.onItemClicked() = copy(checked = !checked)
 fun PendingRentPayUI.toDate(): Date {
     return SimpleDateFormat("d/MM/y", Locale.getDefault()).parse(date)!!
 }
+
+//Make the convert only when the pay is going to be committed. Status is always true
+fun PendingRentPayUI.toRentPayHistory(renterId: String) = RentPayHistory(
+    id = id,
+    date = date,
+    status = true,
+    renterId = renterId
+)

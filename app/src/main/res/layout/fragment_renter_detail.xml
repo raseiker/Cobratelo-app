@@ -11,10 +11,6 @@
         <variable
             name="fragment"
             type="com.example.cobratelo_app.ui.renter_detail.RenterDetailFragment" />
-
-        <variable
-            name="viewModel"
-            type="com.example.cobratelo_app.ui.renter_detail.RenterDetailViewModel" />
     </data>
 
     <ScrollView
@@ -377,7 +373,6 @@
                 android:id="@+id/water_amountTxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{@string/renter_summary_amount(viewModel.getTotalPendingWaterPayments())}"
                 tools:text="S/. 33.40"
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:gravity="end"
@@ -402,7 +397,6 @@
                 android:id="@+id/energy_amountTxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{@string/renter_summary_amount(viewModel.getTotalPendingEnergyPayments())}"
                 tools:text="S/. 83.00"
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:gravity="end"
@@ -427,7 +421,6 @@
                 android:id="@+id/total_amountTxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{@string/renter_summary_amount(viewModel.getTotal(waterAmountTxt.text, waterAmountTxt.text, energyAmountTxt.text))}"
                 tools:text="S/. 616.00"
                 style="@style/Widget.Cobrateloapp.TextView"
                 android:gravity="end"

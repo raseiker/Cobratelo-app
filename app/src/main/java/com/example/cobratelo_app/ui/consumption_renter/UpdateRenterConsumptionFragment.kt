@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.cobratelo_app.R
 import com.example.cobratelo_app.core.generateMenuDropdown
@@ -17,6 +20,7 @@ import com.example.cobratelo_app.core.validateFields
 import com.example.cobratelo_app.databinding.FragmentUpdateRenterConsumptionBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class UpdateRenterConsumptionFragment : Fragment() {
@@ -37,7 +41,7 @@ class UpdateRenterConsumptionFragment : Fragment() {
         binding?.apply {
 //            viewModel = this@UpdateRenterConsumptionFragment.viewModel
 
-            validateFields(listOf(tvKwh, tvRentKwhConsumptionDate, tvWater, rentersTv), updateBtn)
+            //validateFields(listOf(tvKwh, tvRentKwhConsumptionDate, tvWater, rentersTv), updateBtn)
 
             rentKwhConsumptionDate.setEndIconOnClickListener {
                 //show date picker
@@ -45,39 +49,63 @@ class UpdateRenterConsumptionFragment : Fragment() {
             }
 
             //create name list of existing renters
-            generateMenuDropdown(renters, viewModel.getAllRenterNames())
+            lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    generateMenuDropdown(renters, viewModel.getAllRenterNames().await())
+                    validateFields(listOf(tvKwh, tvRentKwhConsumptionDate, tvWater, rentersTv), updateBtn)
+                }
+            }
 
             //click listener
             updateBtn.setOnClickListener {
-                val response = updateRenterConsumption(
-                    rentersTv.text.toString(),
-                    kwhTxt.editText?.text.toString(),
-                    waterTxt.editText?.text.toString(),
-                    rentKwhConsumptionDate.editText?.text.toString()
-                )
+                lifecycleScope.launch {
+                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                        val response = updateRenterConsumption (
+                            rentersTv.text.toString(),
+                            kwhTxt.editText?.text.toString(),
+                            waterTxt.editText?.text.toString(),
+                            rentKwhConsumptionDate.editText?.text.toString()
+                        )
 
-                //if true then show a confirmation message, if false show a error message
-                if (response) {
-                    //show confirmation message
-                    showConfirmationToast(rentersTv.text.toString())
+                        //if true then show a confirmation message, if false show a error message
+                        if (response.await()) {
+                            //show confirmation message
+                            showConfirmationToast(rentersTv.text.toString())
 
-                    //clean fields
-                    rentersTv.text = Editable.Factory.getInstance().newEditable("")
-                    kwhTxt.editText?.text = Editable.Factory.getInstance().newEditable("")
-                    waterTxt.editText?.text = Editable.Factory.getInstance().newEditable("")
-                    rentKwhConsumptionDate.editText?.text = Editable.Factory.getInstance().newEditable("")
-                } else {
-                    //show error
+                            //clean fields
+                            cleanFields()
+                        } else {
+                            //show error
+                        }
+                    }
                 }
+
             }
         }
     }
 
-    private fun updateRenterConsumption(renterName: String, kwh: String, water: String, date: String) =
+    private fun cleanFields() = binding?.apply {
+        rentersTv.text = Editable.Factory.getInstance().newEditable("")
+        kwhTxt.editText?.text = Editable.Factory.getInstance().newEditable("")
+        waterTxt.editText?.text = Editable.Factory.getInstance().newEditable("")
+        rentKwhConsumptionDate.editText?.text =
+            Editable.Factory.getInstance().newEditable("")
+    }
+
+    private fun updateRenterConsumption(
+        renterName: String,
+        kwh: String,
+        water: String,
+        date: String
+    ) =
         viewModel.updateRenterConsumption(renterName, kwh, water, date)
 
     private fun showConfirmationToast(renterName: String) {
-        Toast.makeText(requireContext(), "successfully update consumption for $renterName", Toast.LENGTH_LONG)
+        Toast.makeText(
+            requireContext(),
+            "successfully update consumption for $renterName",
+            Toast.LENGTH_LONG
+        )
             .show()
     }
 

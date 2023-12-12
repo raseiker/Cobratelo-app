@@ -1,6 +1,7 @@
 package com.example.cobratelo_app.data.model
 
 import com.example.cobratelo_app.core.Util
+import com.example.cobratelo_app.data.network.RentPayHistoryEntity
 import com.example.cobratelo_app.ui.pay_history.rent.CanceledRentPayUI
 import com.example.cobratelo_app.ui.pay_history.rent.PendingRentPayUI
 import java.time.LocalDate
@@ -13,7 +14,7 @@ data class RentPayHistory(
 )
 
 fun RentPayHistory.toPendingRentUI(amount: String) = PendingRentPayUI(
-    id = "${renterId}${id}",
+    id = id,
     date = date,
     amount = amount,
 )
@@ -21,6 +22,12 @@ fun RentPayHistory.toPendingRentUI(amount: String) = PendingRentPayUI(
 fun RentPayHistory.toCanceledRentUI(amount: String) = CanceledRentPayUI (
     date = date,
     amount = amount,
+)
+
+fun RentPayHistory.toRentPayHistoryEntity() = RentPayHistoryEntity(
+    id = id,
+    date = date,
+    status = status,
 )
 
 fun RentPayHistory.getMonthValue(): Int {

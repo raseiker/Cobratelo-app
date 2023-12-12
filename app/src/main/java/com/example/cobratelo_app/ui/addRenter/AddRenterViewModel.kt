@@ -2,11 +2,15 @@ package com.example.cobratelo_app.ui.addRenter
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.cobratelo_app.core.Util
 import com.example.cobratelo_app.core.getPrettyDay
 import com.example.cobratelo_app.data.model.Renter
+import com.example.cobratelo_app.data.network.RenterEntity
 import com.example.cobratelo_app.data.repo.renter.RenterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,12 +30,12 @@ class AddRenterViewModel @Inject constructor(
         rentPlace: String,
         rentFloor: String,
         rentFlatType: String
-    ): Boolean {
-        val newRenter = Renter(
+    ) = viewModelScope.async {
+        val newRenter = RenterEntity(
             id = "999",
             name = rentName,
             place = rentPlace,
-            desc = "Not energy consumption set up yet",
+            //desc = "Not energy consumption set up yet",
             createdAt = getPrettyCurrentDate(),
             contractTime = rentContractTime,
             members = rentMembers,
@@ -43,7 +47,7 @@ class AddRenterViewModel @Inject constructor(
         )
 //        Log.d("addRenter", "addRenter: $newRenter")
 //        return true
-        return renterRepository.insertRenter(newRenter)
+        renterRepository.insertRenter(newRenter)
     }
 }
 

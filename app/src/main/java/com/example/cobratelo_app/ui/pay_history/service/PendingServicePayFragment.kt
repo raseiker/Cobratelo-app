@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.cobratelo_app.databinding.FragmentPendingServicePayBinding
+import com.example.cobratelo_app.ui.pay_history.pay_confirmation.rent.RentPayConfirmationFragmentDirections
 
 class PendingServicePayFragment : Fragment() {
 
@@ -35,6 +37,11 @@ class PendingServicePayFragment : Fragment() {
                 fViewModel.onCheckedChangeService(item, checked)
                 onPayPendingPayments.isEnabled = fViewModel.enablePayOption()
             })
+            onPayPendingPayments.setOnClickListener {
+                val action = ServicePayHistoryFragmentDirections
+                    .actionServicePayHistoryFragmentToServicePayConfirmationFragment(fViewModel.renterName!!)
+                findNavController().navigate(action)
+            }
         }
     }
 

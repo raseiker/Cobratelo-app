@@ -37,7 +37,7 @@ class ServicePayHistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
             nameTxt.text = args.renterName
-            viewModel.setRenterId(args.renterId)
+            viewModel.setRenterId(args.renterId, args.renterName)
 
             viewPager.adapter = ServiceViewPageAdapter(requireActivity())
             //set up tab layout mediator between tabLayout and viewPager and then attach it

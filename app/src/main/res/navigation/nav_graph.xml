@@ -36,6 +36,12 @@
         <argument
             android:name="renterId"
             app:argType="string" />
+        <argument
+            android:name="renterAmount"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_rentPayHistoryFragment_to_payConfirmationFragment"
+            app:destination="@id/payConfirmationFragment" />
     </fragment>
     <fragment
         android:id="@+id/servicePayHistoryFragment"
@@ -48,6 +54,9 @@
         <argument
             android:name="renterId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_servicePayHistoryFragment_to_servicePayConfirmationFragment"
+            app:destination="@id/servicePayConfirmationFragment" />
     </fragment>
     <fragment
         android:id="@+id/updateRenterConsumptionFragment"
@@ -86,5 +95,27 @@
         <action
             android:id="@+id/action_energySummaryFragment_to_updateRenterConsumptionFragment"
             app:destination="@id/updateRenterConsumptionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/payConfirmationFragment"
+        android:name="com.example.cobratelo_app.ui.pay_history.pay_confirmation.rent.RentPayConfirmationFragment"
+        android:label="PayConfirmationFragment" >
+        <argument
+            android:name="renterName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_payConfirmationFragment_to_rentPayHistoryFragment"
+            app:destination="@id/rentPayHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/servicePayConfirmationFragment"
+        android:name="com.example.cobratelo_app.ui.pay_history.pay_confirmation.service.ServicePayConfirmationFragment"
+        android:label="ServicePayConfirmationFragment" >
+        <argument
+            android:name="renterName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_servicePayConfirmationFragment_to_servicePayHistoryFragment"
+            app:destination="@id/servicePayHistoryFragment" />
     </fragment>
 </navigation>

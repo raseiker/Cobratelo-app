@@ -11,14 +11,15 @@ import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class RenterRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore
 ): RenterRepository {
     override fun getAllRenter(): Flow<List<RenterEntity>> {
-        return db.collection("renters")
-            .orderBy("name", Query.Direction.ASCENDING)
+        return db.collection(RENTER_COLLECTION)
+            .orderBy(RENTER_NAME_FIELD, Query.Direction.ASCENDING)
             .snapshots()
             .map { snapshot ->
                 Log.d(TAG, "repoRenter: ${snapshot.documents.size}")
@@ -42,7 +43,23 @@ class RenterRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun insertRenter(renter: Renter): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun insertRenter(renter: RenterEntity): Boolean {
+        return try {
+            val newDocument = db.collection(RENTER_COLLECTION)
+                .document()
+            newDocument
+                .set(renter.copy(id = newDocument.id))
+                .await()
+            true
+        } catch (e: Exception) {
+            Log.d(TAG, "repoRenter by id: ${e.message}")
+            false
+        }
+
+    }
+
+    companion object {
+        const val RENTER_COLLECTION = "renters"
+        const val RENTER_NAME_FIELD = "name"
     }
 }

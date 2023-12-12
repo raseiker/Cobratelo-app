@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.cobratelo_app.databinding.FragmentPendingRentPayBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,6 +39,12 @@ class PendingRentPayFragment : Fragment() {
                     fViewModel.onCheckedChange(item, checked)
                     payButton.isEnabled = fViewModel.enablePayOption()
                 })
+
+            payButton.setOnClickListener {
+                val action = RentPayHistoryFragmentDirections
+                    .actionRentPayHistoryFragmentToPayConfirmationFragment(fViewModel.renterName ?: "unknown")
+                findNavController().navigate(action)
+            }
         }
     }
 

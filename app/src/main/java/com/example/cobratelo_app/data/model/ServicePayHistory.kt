@@ -1,5 +1,6 @@
 package com.example.cobratelo_app.data.model
 
+import com.example.cobratelo_app.data.network.ServicePayHistoryEntity
 import com.example.cobratelo_app.ui.pay_history.service.CanceledServicePayUI
 import com.example.cobratelo_app.ui.pay_history.service.PendingServicePayUI
 
@@ -14,7 +15,7 @@ data class ServicePayHistory(
 )
 
 fun ServicePayHistory.toPendingServiceUI() = PendingServicePayUI(
-    id = "${renterId}${id}",
+    id = id,
     date = date,
     energyAmount = energyAmount.toString(),
     waterAmount = waterAmount.toString(),
@@ -25,4 +26,12 @@ fun ServicePayHistory.toCanceledServiceUI() = CanceledServicePayUI(
     date = date,
     energyAmount = energyAmount.toString(),
     waterAmount = waterAmount.toString()
+)
+
+fun ServicePayHistory.toServicePayHistoryEntity() = ServicePayHistoryEntity (
+    id = id,
+    date = date,
+    energyAmount = energyAmount,
+    waterAmount = waterAmount,
+    status = status
 )

@@ -8,16 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.cobratelo_app.R
 import com.example.cobratelo_app.core.RenterStatus
-import com.example.cobratelo_app.data.model.Renter
 import com.example.cobratelo_app.databinding.FragmentRenterDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RenterDetailFragment : Fragment() {
@@ -41,35 +37,58 @@ class RenterDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
-            //find renter by id
-            fViewModel.getRenterById(navArgs.renterId)
+            //set renter by its id
+            fViewModel.setRenterById(navArgs.renterId)
+
             //assign renter object with the renter data binding
-//            renter = fViewModel._renterRequested
-            lifecycleOwner = viewLifecycleOwner
-            fViewModel._renterRequested.observe(viewLifecycleOwner) { item ->
+            fViewModel.renterRequested.observe(viewLifecycleOwner) { item ->
                 renter = item
             }
             fragment = this@RenterDetailFragment
 
+            //observe and set total pending rent
             fViewModel.getTotalPendingRentPayments().observe(viewLifecycleOwner) {total ->
-                rentPaymentPendingTxt.text = getString(R.string.renter_rent_payment, total)
+                rentAmountTxt.text = getString(R.string.renter_summary_amount, total)
             }
 
-            //get pending renter payments by renterId
-            //plus all pending payments
-            //show result in the fragment via data binding
-            viewModel = fViewModel
+            //observe and set total pending water
+            fViewModel.totalWater.observe(viewLifecycleOwner){ totalWater ->
+                waterAmountTxt.text = getString(R.string.renter_summary_amount, totalWater.toString())
+            }
 
-//            rentPaymentCard.setOnClickListener {
-//                //navigate and pass in the renter name
-//                val action = RenterDetailFragmentDirections.actionRenterDetailFragmentToRentPayHistoryFragment(fViewModel._renterRequested.name, fViewModel._renterRequested.id)
-//                findNavController().navigate(action)
-//            }
-//
-//            rentServicePaymentCard.setOnClickListener {
-//                val action = RenterDetailFragmentDirections.actionRenterDetailFragmentToServicePayHistoryFragment(fViewModel._renterRequested.name, fViewModel._renterRequested.id)
-//                findNavController().navigate(action)
-//            }
+            //observe and set total pending energy
+            fViewModel.totalEnergy.observe(viewLifecycleOwner){ totalEnergy ->
+                energyAmountTxt.text = getString(R.string.renter_summary_amount, totalEnergy.toString())
+            }
+
+            //observe and set sum of pending energy + water + rent
+            fViewModel.total.observe(viewLifecycleOwner){total ->
+                totalAmountTxt.text = getString(R.string.renter_summary_amount, total.toString())
+            }
+
+            rentPaymentCard.setOnClickListener {
+                fViewModel.renterRequested.value?.let { renter ->
+                    //navigate and pass in the renter name
+                    val action = RenterDetailFragmentDirections
+                        .actionRenterDetailFragmentToRentPayHistoryFragment(
+                            renterName = renter.name!!,
+                            renterId = renter.id!!,
+                            renterAmount = renter.rentAmount
+                        )
+                    findNavController().navigate(action)
+                }
+            }
+
+            rentServicePaymentCard.setOnClickListener {
+                (fViewModel.renterRequested.value)?.let { renter ->
+                    val action = RenterDetailFragmentDirections
+                        .actionRenterDetailFragmentToServicePayHistoryFragment(
+                            renterName = renter.name!!,
+                            renterId = renter.id!!
+                        )
+                    findNavController().navigate(action)
+                }
+            }
         }
     }
 

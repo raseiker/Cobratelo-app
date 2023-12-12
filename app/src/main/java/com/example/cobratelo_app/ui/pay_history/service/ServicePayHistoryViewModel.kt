@@ -4,20 +4,35 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.cobratelo_app.data.model.ServicePayHistory
 import com.example.cobratelo_app.data.model.toCanceledServiceUI
 import com.example.cobratelo_app.data.model.toPendingServiceUI
+import com.example.cobratelo_app.data.model.toRentPayHistoryEntity
+import com.example.cobratelo_app.data.model.toServicePayHistoryEntity
 import com.example.cobratelo_app.data.network.toServicePayHistory
 import com.example.cobratelo_app.data.repo.pay_history.ServicePayHistoryRepository
+import com.example.cobratelo_app.ui.ResponseUI
+import com.example.cobratelo_app.ui.pay_history.pay_confirmation.rent.RentPayConfirmationUI
+import com.example.cobratelo_app.ui.pay_history.rent.toRentPayHistory
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class ServicePayHistoryViewModel @Inject constructor(
     private val servicePayHistoryRepository: ServicePayHistoryRepository,
 ) : ViewModel() {
-    private var renterId: String? = null
+    var renterId: String? = null
+        private set
+    var renterName: String? = null
+        private set
 
     private var rentHistory: List<ServicePayHistory> = emptyList()
 
@@ -26,56 +41,49 @@ class ServicePayHistoryViewModel @Inject constructor(
 
     private var pendingBackUp: MutableList<PendingServicePayUI> = mutableListOf()
 
+    private var _stateUI = MutableStateFlow<ResponseUI<Boolean>>(ResponseUI.Loading)
+    val stateUI: StateFlow<ResponseUI<Boolean>> = _stateUI.asStateFlow()
 
-    fun setRenterId(renterId: String) {
-        this.renterId = renterId
-        setRentHistoryByRenterId(renterId)
+    fun setRenterId(renterId: String, renterName: String)= viewModelScope.launch {
+        this@ServicePayHistoryViewModel.renterId = renterId
+        this@ServicePayHistoryViewModel.renterName = renterName
+        val job = setServiceHistoryByRenterId(renterId)
+        job.join()
         getPendingServicePayments()
         Log.d("setRenterId", "setRenterId: $renterId")
     }
 
     //get all rent history by Id
-    private fun setRentHistoryByRenterId(renterId: String) {
-        if( this.renterId != null)
+    private fun setServiceHistoryByRenterId(renterId: String) = viewModelScope.launch {
             rentHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(renterId)
-                .asLiveData().value
-                ?.map { it.toServicePayHistory(renterId) }!!
+                .firstOrNull()
+                ?.map { it.toServicePayHistory(renterId) } ?: emptyList()
     }
 
-    private fun getPendingServicePayments() = renterId?.let { id ->
+    private fun getPendingServicePayments() {
 
-        //obtain all history service payments
-        val serviceHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(id)
-            .asLiveData().value
-            ?.map { it.toServicePayHistory(id) }!!
+            //filter by pending pays only
+            val pendingService = rentHistory.filter { !it.status }
 
-        //filter by pending pays only
-        val pendingService = serviceHistory.filter { !it.status }
+            //create pending service UI
+            pendingBackUp = pendingService.map { it.toPendingServiceUI() }.toMutableList()
 
-        //create pending service UI
-        pendingBackUp = pendingService.map { it.toPendingServiceUI() }.toMutableList()
+            //enable first
+            if (pendingBackUp.isNotEmpty()) pendingBackUp[0] =
+                pendingBackUp[0].copy(enabled = true)
 
-        //enable first
-        if (pendingBackUp.isNotEmpty()) pendingBackUp[0] =
-            pendingBackUp[0].copy(enabled = true)
+            //update UI
+            _pendingServiceUI.value = pendingBackUp.toMutableList()
 
-        //update UI
-        _pendingServiceUI.value = pendingBackUp.toMutableList()
     }
 
     fun getCanceledServicePayments(): List<CanceledServicePayUI>? {
-        return renterId?.let {id ->
-            //get history by renter id
-            val paymentHistory = servicePayHistoryRepository.getAllServicePayHistoryByRenterId(id)
-                .asLiveData().value
-                ?.map { it.toServicePayHistory(id) }
 
             //filter by canceled only
-            val onlyCanceled = paymentHistory?.filter { it.status }
+            val onlyCanceled = rentHistory.filter { it.status }
 
             //create list UI
-            onlyCanceled?.map { it.toCanceledServiceUI() }
-        } ?: emptyList()
+            return onlyCanceled?.map { it.toCanceledServiceUI() }
     }
 
     fun enablePayOption(): Boolean {
@@ -123,5 +131,32 @@ class ServicePayHistoryViewModel @Inject constructor(
             val next = pendingBackUp[index + 1]
             replaceItem(next.copy(enabled = enable), "$msg newer")
         }
+    }
+
+    fun checkedPendingList() = pendingBackUp.filter { it.checked }
+        .map { RentPayConfirmationUI(
+            id = it.id,
+            date = it.date,
+            concept = "LUZ-AGUA",
+            amount = it.getTotalService().toString()
+        ) }
+    fun getCurrentTime(): String = LocalDateTime.now().format(
+        DateTimeFormatter
+        .ofPattern("dd/M/yyyy HH:m"))
+
+    fun getTotalSelectedPays(): String = pendingBackUp.filter { it.checked }
+        .sumOf { it.getTotalService() }.toString()
+
+    fun confirmPay() = viewModelScope.launch {
+        //catch only checked rent pending
+        val selectedPays = pendingBackUp.filter { it.checked }
+
+        //call repo
+        _stateUI.value = servicePayHistoryRepository.updatePendingServices (
+            selectedList = selectedPays.map { it.toServicePayHistory(renterId!!) }
+                .map { it.toServicePayHistoryEntity() },
+            renterId = renterId!!
+        )
+        //return boolean and react accordingly
     }
 }
